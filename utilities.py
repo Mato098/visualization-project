@@ -7,6 +7,11 @@ def accumulate_chapters(book: Book, ch_from: int, ch_to: int) -> Chapter:
         result.avg_word_length += book['chapters'][i]['avg_word_length']
         result.avg_wordcount_per_sentence += book['chapters'][i]['avg_wordcount_per_sentence']
         result.lute_count += book['chapters'][i]['lute_count']
+        for name, count in book['chapters'][i]['nameCount'].items():
+            if name in result.nameCount:
+                result.nameCount[name] += count
+            elif count > 0:
+                result.nameCount[name] = count
         for word in book['chapters'][i]['word_frequency']:
             if word in result.word_frequency:
                 result.word_frequency[word] += book['chapters'][i]['word_frequency'][word]
@@ -23,4 +28,8 @@ def accumulate_chapters(book: Book, ch_from: int, ch_to: int) -> Chapter:
     result.avg_word_length /= max(ch_to - ch_from, 1)
     result.avg_wordcount_per_sentence /= max(ch_to - ch_from, 1)
     result.word_frequency_sorted = sorted(result.word_frequency.items(), key=lambda x: x[1], reverse=True)
+
+    if len(result.nameCount) == 0:
+        result.nameCount["No names found"] = 1
+        
     return result

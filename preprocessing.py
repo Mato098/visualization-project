@@ -34,7 +34,7 @@ class Chapter:
         return f'chapter {self.number}: {self.title}'
 
 
-def load_text(path: str = 'project/Name of the Wind.txt') -> str:
+def load_text(path: str = './Name of the Wind.txt') -> str:
     with open(path, 'r', encoding='utf-8') as f:
         text = f.read()
     return text
@@ -105,8 +105,8 @@ def process_chapter(chapter: Chapter) -> None:
 ]
     
     for name in nameList:
-        name = name.lower()
-        chapter.nameCount[name] = chapter.text.lower().count(name)
+        #name = name.lower()
+        chapter.nameCount[name] = chapter.text.count(name)
 
     return chapter
 
@@ -140,7 +140,7 @@ def save_book_as_json(book: Book) -> None:
     for chapter in b.chapters:
         del chapter.text
     
-    with open(f'project/{b.name}.json', 'w', encoding='utf-8') as f:
+    with open(f'./{b.name}.json', 'w', encoding='utf-8') as f:
         json.dump(book, f, default=lambda x: x.__dict__, indent=4)
 
 
@@ -150,7 +150,7 @@ def main():
     process_book(book1)
     save_book_as_json(book1)
 
-    text2 = load_text('project/wise_mans_fear.txt')
+    text2 = load_text('./wise_mans_fear.txt')
     book2 = create_book(text2, 'Wise Man\'s Fear')
     process_book(book2)
     save_book_as_json(book2)

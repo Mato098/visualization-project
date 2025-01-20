@@ -4,19 +4,49 @@ import wordclouds
 from dash import html, dcc
 import utilities as utils
 
-# Initialize the app
 app = dash.Dash(__name__)
+
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%css%}
+        <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                background-color: #685752;
+            }
+            #main-container {
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+    </body>
+</html>
+'''
 
 toggle1_state = True
 toggle2_state = False
 
-book1 = json.load(open('project/Name of the Wind.json'))
-book2 = json.load(open('project/Wise Man\'s Fear.json'))
+book1 = json.load(open('./Name of the Wind.json'))
+book2 = json.load(open('./Wise Man\'s Fear.json'))
 
-slider1_from = 1
-slider1_to = 3
-slider2_from = 1
-slider2_to = 3
+slider1_from = 0
+slider1_to = 14
+slider2_from = 0
+slider2_to = 14
 
 wordcloud1 = None
 wordcloud2 = None
@@ -48,18 +78,20 @@ toggle2_style = {
 toggle1 = html.Button(
     id="toggle-1",
     children="Name of the Wind",
-    style = {**toggle1_style, 'backgroundColor': 'green' if toggle1_state else 'red'}
+    className='toggle-button toggle-button-green' if toggle1_state else 'toggle-button toggle-button-red'
 )
 toggle2 = html.Button(
     id="toggle-2",
     children="Wise Man\'s Fear",
-    style = {**toggle2_style, 'backgroundColor': 'green' if toggle2_state else 'red'}
+    className='toggle-button toggle-button-green' if toggle2_state else 'toggle-button toggle-button-red'
 )
 
 app.layout = html.Div(
-    style={'textAlign': 'center', 'fontFamily': 'Arial'},
+    id="main-container",
+    style={'textAlign': 'center', 'fontFamily': 'Arial',
+            'backgroundColor': '#685752', 'padding': '0', 'margin': '0'},
     children=[
-        html.H1("Analysis of The Kingkiller Chronicle", style={'textAlign': 'center', 'marginBottom': '20px'}),
+        html.H1("Analysis of The Kingkiller Chronicle"),
         
         html.Div(
             id="chapter-display",
@@ -87,14 +119,8 @@ app.layout = html.Div(
             id="toggle-container",
             style={'width': '60%', 'margin': '0 auto', 'marginTop': '20px'},
             children=[
-                html.Div(
-                    toggle1,
-                    style={**toggle1_style, 'backgroundColor': 'green' if toggle1_state else 'red'},
-                ),
-                html.Div(
-                    toggle2,
-                    style={**toggle2_style, 'backgroundColor': 'green' if toggle2_state else 'red'},
-                )
+                toggle1,
+                toggle2
             ]
         ),
         html.Div(
@@ -103,11 +129,13 @@ app.layout = html.Div(
             children=[
                 dcc.RangeSlider(
                     id='chapter-slider',
-                    min=1,
+                    min=0,
                     max=len(book1['chapters']),  # Example range; can be updated dynamically
                     step=1,
                     marks={i: f"{i}" for i in range(1, len(book1['chapters']) + 1, 10)},  # Display every tenth number
-                    value=[1, 3]  # Initial range
+                    value=[0, 14],  # Initial range
+                    tooltip={'always_visible': True, 'placement': 'bottom'},
+                    className='book1-slider' if toggle1_state else 'book2-slider'
                 )
             ]
         ),
@@ -131,21 +159,21 @@ app.layout = html.Div(
 def update_chapter_display(value):
     global slider1_from, slider1_to, slider2_from, slider2_to, toggle1_state
     if toggle1_state:
-        slider1_from, slider1_to = (value[0] - 1, value[1] - 1) 
+        slider1_from, slider1_to = (value[0], value[1] - 1)
     else:
-        slider2_from, slider2_to = (value[0] - 1, value[1] - 1)
+        slider2_from, slider2_to =  (value[0], value[1] - 1)
     if value[0] == value[1]:  # Single chapter selected
-        return f"""Displaying chapter: {value[0]}\n
-          - {book1['chapters'][value[0] - 1]['title'] if toggle1_state else book2['chapters'][value[0] - 1]['title']}"""
-    return [f"Displaying chapters: {value[0]} to {value[1]}",
-      f"""\n- {book1['chapters'][value[0] - 1]['title'] if toggle1_state else book2['chapters'][value[0] - 1]['title']}
-      - {book1['chapters'][value[1] - 1]['title'] if toggle1_state else book2['chapters'][value[1] - 1]['title']}"""]
+        return f"""Displaying chapter: {value[0] + 1}\n
+          - {book1['chapters'][value[0]]['title'] if toggle1_state else book2['chapters'][value[0]]['title']}"""
+    return [f"Displaying chapters: {value[0] + 1} to {value[1] + 1}",
+      f"""\n- {book1['chapters'][value[0]]['title'] if toggle1_state else book2['chapters'][value[0]]['title']}
+      - {book1['chapters'][value[1]]['title'] if toggle1_state else book2['chapters'][value[1]]['title']}"""]
 
 #@app.callback(
     #dash.Input('chapter-slider', 'value'),
 #)
-def get_wordcloud(book: Book, slider_from, slider_to):
-    return html.Img(src='data:image/png;base64,{}'.format(wordclouds.generate_wordcloud(utils.accumulate_chapters(book, slider_from, slider_to)))) 
+def get_wordcloud(book: Book, slider_from, slider_to, names: bool = False):
+    return html.Img(src='data:image/png;base64,{}'.format(wordclouds.generate_wordcloud(utils.accumulate_chapters(book, slider_from, slider_to), names))) 
 
 
 @app.callback(
@@ -155,22 +183,51 @@ def get_wordcloud(book: Book, slider_from, slider_to):
     dash.Input('toggle-1', 'n_clicks'),
 )
 def render_tab_content(selected_tab, slider, toggle1_clicks):
-    global wordcloud1, wordcloud2, toggle1_state, wordcloud1_invalid, wordcloud2_invalid
-    print(dash.callback_context.triggered)
+    global wordcloud1, wordcloud2, wordcloud3, wordcloud4,\
+          toggle1_state, wordcloud1_invalid, wordcloud2_invalid, wordcloud3_invalid, wordcloud4_invalid
+    
+    if 'chapter-slider' in dash.callback_context.triggered[0]['prop_id'] and len(dash.callback_context.triggered) == 1:
+        if toggle1_state:
+            wordcloud1_invalid = True
+            wordcloud3_invalid = True
+        else:
+            wordcloud2_invalid = True
+            wordcloud4_invalid = True
     
     if selected_tab == 'wordclouds':
-        if 'chapter-slider' in dash.callback_context.triggered[0]['prop_id'] and len(dash.callback_context.triggered) == 1:
-            print("SLIDERR")
-            if toggle1_state or wordcloud1 is None:
-                wordcloud1 = get_wordcloud(book1, slider[0] - 1, slider[1] - 1)
-            elif not toggle1_state or wordcloud2 is None:
-                wordcloud2 = get_wordcloud(book2, slider[0] - 1, slider[1] - 1)
+        for idx, i in enumerate([(wordcloud1, wordcloud1_invalid), (wordcloud2, wordcloud2_invalid), (wordcloud3, wordcloud3_invalid), (wordcloud4, wordcloud4_invalid)]):
+            if idx == 0:
+                if i[0] is None or i[1]:
+                    wordcloud1 = get_wordcloud(book1, slider[0], slider[1])
+                    wordcloud1_invalid = False
+            elif idx == 1:
+                if i[0] is None or i[1]:
+                    wordcloud2 = get_wordcloud(book2, slider[0], slider[1])
+                    wordcloud2_invalid = False
+            elif idx == 2:
+                if i[0] is None or i[1]:
+                    wordcloud3 = get_wordcloud(book1, slider[0], slider[1], True)
+                    wordcloud3_invalid = False
+            elif idx == 3:
+                if i[0] is None or i[1]:
+                    wordcloud4 = get_wordcloud(book2, slider[0], slider[1], True)
+                    wordcloud4_invalid = False
 
-        return wordcloud1 if toggle1_state else wordcloud2
+        if toggle1_state:
+            return html.Div([
+                html.Div(wordcloud1, style={'display': 'inline-block', 'marginRight': '20px'}),
+                html.Div(wordcloud3, style={'display': 'inline-block'})
+            ])
+        else:
+            return html.Div([
+                html.Div(wordcloud2, style={'display': 'inline-block', 'marginRight': '20px'}),
+                html.Div(wordcloud4, style={'display': 'inline-block'})
+            ])
     
     elif selected_tab == 'barcharts':
         return html.Div("Bar charts go here.")
     return html.Div("Select a view.")
+
 
 
 @app.callback(
@@ -183,47 +240,40 @@ def buttons_toggle_children_update(_, __):
     toggle2_state = not toggle2_state
     toggle1_state = not toggle1_state
     
-    toggle1.style = {
-        'color': 'white',
-        'border': 'none',
-        'padding': '10px 20px',
-        'borderRadius': '5px',
-        'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-        'transition': '0.3s',
-        'backgroundColor': 'green' if toggle1_state else 'red'
-    }
-    toggle2.style = {
-        'color': 'white',
-        'border': 'none',
-        'padding': '10px 20px',
-        'borderRadius': '5px',
-        'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-        'transition': '0.3s',
-        'backgroundColor': 'green' if toggle2_state else 'red'
-    }
+    toggle1 = html.Button(
+        id="toggle-1",
+        children="Name of the Wind",
+        className='toggle-button toggle-button-green' if toggle1_state else 'toggle-button toggle-button-grey'
+    )
+    toggle2 = html.Button(
+        id="toggle-2",
+        children="Wise Man\'s Fear",
+        className='toggle-button toggle-button-red' if toggle2_state else 'toggle-button toggle-button-grey'
+    )
 
     slider_max = len(book1['chapters']) if toggle1_state else len(book2['chapters'])
     slider_saved_from = slider1_from if toggle1_state else slider2_from
     slider_saved_to = slider1_to if toggle1_state else slider2_to
     new_slider = dcc.RangeSlider(
         id='chapter-slider',
-        min=1,
-        max=slider_max,
+        min=0,
+        max=slider_max - 1,
         step=1,
-        marks={1: "1", slider_max: f"{slider_max}"} | {i: f"{i}" for i in range(0, slider_max, 10)},
-        value=[slider_saved_from + 1, slider_saved_to + 1]
+        marks={1: "1", slider_max: f"{slider_max}"} | {i: f"{i}" for i in range(10, slider_max, 10)},
+        value=[slider_saved_from, slider_saved_to + 1],
+        tooltip={'always_visible': True, 'placement': 'bottom'},
+        className='book1-slider' if toggle1_state else 'book2-slider'
     )
     return new_slider, [
         html.Div(
             toggle1,
-            style={'display': 'inline-block', 'marginRight': '20px', 'padding': '10px 20px', 'borderRadius': '5px', 'border': 'none', 'color': 'white'}
+            style={'display': 'inline-block', 'marginRight': '20px'}
         ),
         html.Div(
             toggle2,
-            style={'display': 'inline-block', 'padding': '10px 20px', 'borderRadius': '5px', 'border': 'none', 'color': 'white'}
+            style={'display': 'inline-block'}
         )
     ],
-
 
 
 # Run the app locally
