@@ -81,6 +81,7 @@ h1 {
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s;
+    cursor: pointer;
 }
 
 .toggle-button-green {
@@ -93,4 +94,29 @@ h1 {
 
 .toggle-button-grey {
     background-color: grey;
+}
+
+/* Styles for tab buttons */
+.custom-tabs {
+    background-color: #020302; /* Background color for tabs */
+    color: #a5a5a5; /* Text color for tabs */
+    padding: 10px 20px; /* Padding for tabs */
+    border-radius: 5px 5px 0 0; /* Rounded corners for tabs */
+    margin-right: 5px; /* Space between tabs */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth color transition on hover */
+}
+
+.custom-tabs .tab--selected, .custom-tabs .tab--selected * {
+    background-color: #a74a4a; /* Background color for selected tab */
+    color: #ebebeb; /* Text color for selected tab */
+    border-bottom: 2px solid #A2B041; /* Border color for selected tab */
+}
+
+.custom-tabs .tab:hover {
+    background-color: #b9b9b9; /* Background color for tabs on hover */
+}
+
+.custom-tabs .tab--selected:hover {
+    background-color: #b9b9b9; /* Background color for selected tab on hover */
 }

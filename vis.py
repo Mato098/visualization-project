@@ -139,11 +139,11 @@ app.layout = html.Div(
                 )
             ]
         ),
-        
+
         # Tabs for views
-        dcc.Tabs(id="tabs", value='wordclouds', children=[
-            dcc.Tab(label='Wordclouds', value='wordclouds'),
-            dcc.Tab(label='Bar Charts', value='barcharts'),
+        dcc.Tabs(id="tabs", value='wordclouds', className='custom-tabs', children=[
+            dcc.Tab(label='Wordclouds', value='wordclouds', className='tab', selected_className='tab--selected'),
+            dcc.Tab(label='Bar Charts', value='barcharts', className='tab', selected_className='tab--selected'),
         ]),
         
         # Placeholder for graphs based on selected tab
