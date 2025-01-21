@@ -1,3 +1,5 @@
+@import url('./baskerville/baskvl.ttf');
+
 @font-face {
     font-family: 'CustomFont';
     src: url('./baskerville/baskvl.ttf') format('truetype');
@@ -98,25 +100,95 @@ h1 {
 
 /* Styles for tab buttons */
 .custom-tabs {
-    background-color: #020302; /* Background color for tabs */
-    color: #a5a5a5; /* Text color for tabs */
-    padding: 10px 20px; /* Padding for tabs */
-    border-radius: 5px 5px 0 0; /* Rounded corners for tabs */
-    margin-right: 5px; /* Space between tabs */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth color transition on hover */
+    background-color: rgba(0, 0, 0, 0.20); /* Dark background for tabs */
+    padding: 12px 24px; /* Increased padding for better spacing */
+    border-radius: 8px 8px 8px 8px; /* More rounded corners for a modern look */
+    display: flex; /* Flexbox layout for alignment */
+}
+.custom-tabs .tab-green {
+    background-color: #A2B041 !important; /* Green background for tabs */
+    color: #ffffff !important; /* White text color for tabs */
+    padding: 15px 30px !important; /* Increased padding for tabs */
+    border-radius: 5px 5px 0 0 !important; /* Rounded corners for tabs */
+    margin-right: 20px !important; /* Increased space between tabs */
+    margin-left: 20px !important; /* Increased space from the edge of the screen */
+    cursor: pointer !important; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important; /* Text shadow for visibility */
+    border: none !important;
+    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-.custom-tabs .tab--selected, .custom-tabs .tab--selected * {
-    background-color: #a74a4a; /* Background color for selected tab */
-    color: #ebebeb; /* Text color for selected tab */
-    border-bottom: 2px solid #A2B041; /* Border color for selected tab */
+.custom-tabs .tab-red {
+    background-color: #ff5733 !important; /* Red background for tabs */
+    color: #ffffff !important; /* White text color for tabs */
+    padding: 15px 30px !important; /* Increased padding for tabs */
+    border-radius: 5px 5px 0 0 !important; /* Rounded corners for tabs */
+    margin-right: 20px !important; /* Increased space between tabs */
+    margin-left: 20px !important; /* Increased space from the edge of the screen */
+    cursor: pointer !important; /* Pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important; /* Text shadow for visibility */
+    border: none !important;
+    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-.custom-tabs .tab:hover {
-    background-color: #b9b9b9; /* Background color for tabs on hover */
+/* Styles for individual tabs on hover */
+.custom-tabs .tab-green:hover {
+    background-color: #899637 !important; /* Darker background color for tabs on hover */
 }
 
-.custom-tabs .tab--selected:hover {
-    background-color: #b9b9b9; /* Background color for selected tab on hover */
+/* Styles for the selected tab */
+.custom-tabs .tab-green.tab--selected {
+    background-color: #A2B041 !important; /* Background color for selected tab */
+    border-top: 3px solid #0f0b07 !important; /* Thicker border for selected tab */
+    font-weight: bold !important; /* Bold text for selected tab */
+}
+
+/* Styles for the selected tab on hover */
+.custom-tabs .tab-green.tab--selected:hover {
+    background-color: #899637 !important; /* Darker blue for selected tab on hover */
+}
+
+/* Styles for individual tabs on hover */
+.custom-tabs .tab-red:hover {
+    background-color: #df4928 !important; /* Darker background color for tabs on hover */
+}
+
+/* Styles for the selected tab */
+.custom-tabs .tab-red.tab--selected {
+    background-color: #ff5733 !important; /* Background color for selected tab */
+    border-top: 3px solid #0f0b07 !important; /* Thicker border for selected tab */
+    font-weight: bold !important; /* Bold text for selected tab */
+}
+
+/* Styles for the selected tab on hover */
+.custom-tabs .tab-red.tab--selected:hover {
+    background-color: #df4928 !important; /* Darker blue for selected tab on hover */
+}
+
+.content-container {
+    display: flex;
+    justify-content: space-around; /* Space all content evenly with more space between them */
+    flex-wrap: wrap;
+    padding: 20px; /* Padding for spacing */
+    background-color: rgba(0, 0, 0, 0.1); /* Light background color */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.wordcloud-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center all content horizontally */
+    align-items: center; /* Center all content vertically */
+    padding: 20px; /* Padding for spacing */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.wordcloud-container .label {
+    color: #ffffff;
+    font-size: 20px; /* Larger font size for labels */
+    font-weight: bold; /* Bold font weight for emphasis */
+    margin-bottom: 20px; /* Margin for spacing */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for better readability */
 }

@@ -1,10 +1,14 @@
-import dash, json
+import dash, json, time
 from preprocessing import Book
 import wordclouds
 from dash import html, dcc
 import utilities as utils
 
-app = dash.Dash(__name__)
+external_stylesheets = [
+    '/assets/style.css?v={}'.format(int(time.time()))  # Disable caching by appending a timestamp
+]
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.index_string = '''
 <!DOCTYPE html>
@@ -24,21 +28,49 @@ app.index_string = '''
             #main-container {
                 height: 100%;
             }
+            /* Loading spinner styles */
+            .spinner {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                border: 16px solid #f3f3f3;
+                border-top: 16px solid #3498db;
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                animation: spin 3s linear infinite;
+                z-index: 9999;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .hidden {
+                display: none;
+            }
         </style>
     </head>
     <body>
+        <div id="spinner" class="spinner"></div>
         {%app_entry%}
         <footer>
             {%config%}
             {%scripts%}
             {%renderer%}
         </footer>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var spinner = document.getElementById('spinner');
+                spinner.classList.add('hidden');
+            });
+        </script>
     </body>
 </html>
 '''
 
-toggle1_state = True
-toggle2_state = False
+toggle1_state = False
+toggle2_state = True
 
 book1 = json.load(open('./Name of the Wind.json'))
 book2 = json.load(open('./Wise Man\'s Fear.json'))
@@ -142,12 +174,12 @@ app.layout = html.Div(
 
         # Tabs for views
         dcc.Tabs(id="tabs", value='wordclouds', className='custom-tabs', children=[
-            dcc.Tab(label='Wordclouds', value='wordclouds', className='tab', selected_className='tab--selected'),
-            dcc.Tab(label='Bar Charts', value='barcharts', className='tab', selected_className='tab--selected'),
+            dcc.Tab(id="tab1", label='Wordclouds', value='wordclouds', className='tab-green', selected_className='tab--selected'),
+            dcc.Tab(id="tab2", label='Bar Charts', value='barcharts', className='tab-green', selected_className='tab--selected'),
         ]),
         
         # Placeholder for graphs based on selected tab
-        html.Div(id="tab-content", style={'marginTop': '20px'})
+        html.Div(id="tab-content", className='content-container'),
     ]
 )
 
@@ -172,8 +204,8 @@ def update_chapter_display(value):
 #@app.callback(
     #dash.Input('chapter-slider', 'value'),
 #)
-def get_wordcloud(book: Book, slider_from, slider_to, names: bool = False):
-    return html.Img(src='data:image/png;base64,{}'.format(wordclouds.generate_wordcloud(utils.accumulate_chapters(book, slider_from, slider_to), names))) 
+def get_wordcloud(book: Book, slider_from, slider_to, names: bool = False, green_colormap: bool = True):
+    return html.Img(src='data:image/png;base64,{}'.format(wordclouds.generate_wordcloud(utils.accumulate_chapters(book, slider_from, slider_to), names, green_colormap))) 
 
 
 @app.callback(
@@ -202,7 +234,7 @@ def render_tab_content(selected_tab, slider, toggle1_clicks):
                     wordcloud1_invalid = False
             elif idx == 1:
                 if i[0] is None or i[1]:
-                    wordcloud2 = get_wordcloud(book2, slider[0], slider[1])
+                    wordcloud2 = get_wordcloud(book2, slider[0], slider[1], green_colormap=False)
                     wordcloud2_invalid = False
             elif idx == 2:
                 if i[0] is None or i[1]:
@@ -210,24 +242,37 @@ def render_tab_content(selected_tab, slider, toggle1_clicks):
                     wordcloud3_invalid = False
             elif idx == 3:
                 if i[0] is None or i[1]:
-                    wordcloud4 = get_wordcloud(book2, slider[0], slider[1], True)
+                    wordcloud4 = get_wordcloud(book2, slider[0], slider[1], True, False)
                     wordcloud4_invalid = False
 
         if toggle1_state:
-            return html.Div([
-                html.Div(wordcloud1, style={'display': 'inline-block', 'marginRight': '20px'}),
-                html.Div(wordcloud3, style={'display': 'inline-block'})
-            ])
+            return [
+                html.Div([
+                    html.Label('Meaningful words', className='label'), wordcloud1], className='wordcloud-container'),
+                html.Div([
+                    html.Label('Names', className='label'), wordcloud3], className='wordcloud-container')
+            ]
         else:
-            return html.Div([
-                html.Div(wordcloud2, style={'display': 'inline-block', 'marginRight': '20px'}),
-                html.Div(wordcloud4, style={'display': 'inline-block'})
-            ])
+            return[
+                html.Div([
+                    html.Label('Meaningful words', className='label'), wordcloud2], className='wordcloud-container'),
+                html.Div([
+                    html.Label('Names', className='label'), wordcloud4], className='wordcloud-container')
+            ]
     
     elif selected_tab == 'barcharts':
         return html.Div("Bar charts go here.")
     return html.Div("Select a view.")
 
+@app.callback(
+        dash.Output('tab1', 'className'),
+        dash.Output('tab2', 'className'),
+        dash.Input('toggle-1', 'n_clicks'),
+        dash.Input('toggle-2', 'n_clicks'),
+)
+def update_tab_colors(_, __):
+    global toggle1_state
+    return ('tab-green', 'tab-green') if toggle1_state else ('tab-red', 'tab-red')
 
 
 @app.callback(
@@ -259,7 +304,7 @@ def buttons_toggle_children_update(_, __):
         min=0,
         max=slider_max - 1,
         step=1,
-        marks={1: "1", slider_max: f"{slider_max}"} | {i: f"{i}" for i in range(10, slider_max, 10)},
+        marks={0: "1", slider_max: f"{slider_max}"} | {i: f"{i}" for i in range(10, slider_max, 10)},
         value=[slider_saved_from, slider_saved_to + 1],
         tooltip={'always_visible': True, 'placement': 'bottom'},
         className='book1-slider' if toggle1_state else 'book2-slider'

@@ -3,11 +3,7 @@ from nltk.corpus import stopwords
 import re, typing, unicodedata
 import json
 
-# Download stopwords if not already downloaded
-nltk.download('stopwords')
 
-# Load stopwords
-stop_words = set(stopwords.words('english'))
 
 class Book:
     def __init__(self, name) -> None:
@@ -51,13 +47,15 @@ def create_book(text: str, name: str) -> Book:
     return book
     
 def process_chapter(chapter: Chapter) -> None:
+    # Load stopwords
+    stop_words = set(stopwords.words('english'))
+
     chapter.wordcount = len(chapter.text.split())
     chapter.avg_word_length = sum(len(word) for word in chapter.text.split()) / chapter.wordcount
     chapter.word_frequency = {}
     chapter.word_frequency_no_stopwords = {}
     
     for word in chapter.text.split():
-        word = word.lower()
         word = unicodedata.normalize('NFKD', word)
         word = re.sub(r'[^\w\s]', '', word)
         if word in chapter.word_frequency:
@@ -145,6 +143,9 @@ def save_book_as_json(book: Book) -> None:
 
 
 def main():
+    # Download stopwords if not already downloaded
+    nltk.download('stopwords')
+
     text1 = load_text()
     book1 = create_book(text1, 'Name of the Wind')
     process_book(book1)
