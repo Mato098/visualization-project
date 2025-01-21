@@ -47,7 +47,6 @@ def create_book(text: str, name: str) -> Book:
     return book
     
 def process_chapter(chapter: Chapter) -> None:
-    # Load stopwords
     stop_words = set(stopwords.words('english'))
 
     chapter.wordcount = len(chapter.text.split())
@@ -82,7 +81,6 @@ def process_chapter(chapter: Chapter) -> None:
         # If fewer than 15 words, keep all words
         chapter.word_frequency_no_stopwords = chapter.word_frequency_no_stopwords
 
-    # Sort the word frequencies
     chapter.word_frequency_no_stopwords_sorted = sorted(chapter.word_frequency_no_stopwords.items(), key=lambda x: x[1], reverse=True)
     
     for sentence in re.split('\. |\? |! |\.\n|\?\n|!\n', chapter.text):
@@ -143,7 +141,6 @@ def save_book_as_json(book: Book) -> None:
 
 
 def main():
-    # Download stopwords if not already downloaded
     nltk.download('stopwords')
 
     text1 = load_text()

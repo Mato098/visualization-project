@@ -192,3 +192,22 @@ h1 {
     margin-bottom: 20px; /* Margin for spacing */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for better readability */
 }
+
+.bar-chart-container {/*3x3 grid for graphs*/
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns with equal width */
+    grid-gap: 20px; /* Spacing between columns */
+    padding: 20px; /* Padding for spacing */
+    border-radius: 10px; /* Rounded corners */
+    background-color: rgba(0, 0, 0, 0.1); /* Light background color */
+}
+
+.bar-chart {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center all content horizontally */
+    align-items: center; /* Center all content vertically */
+    padding: 20px; /* Padding for spacing */
+    border-radius: 10px; /* Rounded corners */
+}
+

@@ -260,9 +260,17 @@ def render_tab_content(selected_tab, slider, toggle1_clicks):
                     html.Label('Names', className='label'), wordcloud4], className='wordcloud-container')
             ]
     
-    elif selected_tab == 'barcharts':
-        return html.Div("Bar charts go here.")
-    return html.Div("Select a view.")
+    else:
+        return html.Div(
+            [
+                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
+                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
+                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
+                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
+                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
+                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn'))
+            ], className='bar-chart-container'
+        )
 
 @app.callback(
         dash.Output('tab1', 'className'),
