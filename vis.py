@@ -89,6 +89,13 @@ wordcloud2_invalid = True
 wordcloud3_invalid = True
 wordcloud4_invalid = True
 
+fig1 = None
+fig2 = None
+fig3 = None
+fig4 = None
+fig5 = None
+fig6 = None
+
 toggle1_style = {
         'color': 'white',
         'border': 'none',
@@ -127,25 +134,8 @@ app.layout = html.Div(
         
         html.Div(
             id="chapter-display",
-            style={
-                'width': '60%',
-                'height': 'auto',
-                'margin': '0 auto',
-                'padding': '20px',
-                'border': '2px solid black',
-                'borderRadius': '10px',
-                'backgroundColor': '#f9f9f9',
-                'textAlign': 'center',
-                'fontSize': '20px',
-                'boxShadow': '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                'transition': '0.3s',
-                
-                'display': 'flex',
-                'flexDirection': 'column',
-            },
-            children=["Displaying chapters: -", "asd"]
-            
-
+            className='chapter-display',
+            children=["Displaying chapters: -"]
         ),
         html.Div(
             id="toggle-container",
@@ -179,7 +169,15 @@ app.layout = html.Div(
         ]),
         
         # Placeholder for graphs based on selected tab
-        html.Div(id="tab-content", className='content-container'),
+        html.Div(id="tab-content", className='content-container', children=[
+            dcc.Graph(id='graph1', className='bar-chart'),
+            dcc.Graph(id='graph2', className='bar-chart'),
+            dcc.Graph(id='graph3', className='bar-chart'),
+            dcc.Graph(id='graph4', className='bar-chart'),
+            dcc.Graph(id='graph5', className='bar-chart'),
+            dcc.Graph(id='graph6', className='bar-chart')
+        ]),
+        dcc.Store(id='hovered-chapter', data=None)
     ]
 )
 
@@ -213,8 +211,9 @@ def get_wordcloud(book: Book, slider_from, slider_to, names: bool = False, green
     dash.Input('tabs', 'value'),
     dash.Input('chapter-slider', 'value'),
     dash.Input('toggle-1', 'n_clicks'),
+    dash.State('hovered-chapter', 'data')
 )
-def render_tab_content(selected_tab, slider, toggle1_clicks):
+def render_tab_content(selected_tab, slider, toggle1_clicks, hovered_chapter):
     global wordcloud1, wordcloud2, wordcloud3, wordcloud4,\
           toggle1_state, wordcloud1_invalid, wordcloud2_invalid, wordcloud3_invalid, wordcloud4_invalid
     
@@ -261,16 +260,68 @@ def render_tab_content(selected_tab, slider, toggle1_clicks):
             ]
     
     else:
+        global fig1, fig2, fig3, fig4, fig5, fig6
+        fig1 = utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')
+        fig2 = utils.get_lute_count_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')
+        fig3 = utils.get_name_count_per_name_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')
+        fig4 = utils.get_chapter_length_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')
+        fig5 = utils.get_direct_vs_indirect_speech_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')
+        fig6 = utils.get_avg_wordcount_per_sentence_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')
         return html.Div(
             [
-                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
-                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
-                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
-                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
-                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn')),
-                dcc.Graph(className='bar-chart', figure=utils.get_word_freq_no_stopwords_bar_graph(book1 if toggle1_state else book2, slider[0], slider[1], 'summer' if toggle1_state else 'autumn'))
-            ], className='bar-chart-container'
+                dcc.Graph(id='graph1', className='bar-chart', figure=fig1),
+                dcc.Graph(id='graph2', className='bar-chart', figure=fig2),
+                dcc.Graph(id='graph3', className='bar-chart', figure=fig3),
+                dcc.Graph(id='graph4', className='bar-chart', figure=fig4),
+                dcc.Graph(id='graph5', className='bar-chart', figure=fig5),
+                dcc.Graph(id='graph6', className='bar-chart', figure=fig6)
+            ],
+            className='bar-chart-container'
         )
+    
+@app.callback(
+    dash.Output('hovered-chapter', 'data'),
+    [dash.Input('graph1', 'hoverData'), dash.Input('graph2', 'hoverData'), dash.Input('graph3', 'hoverData'), dash.Input('graph4', 'hoverData'), dash.Input('graph5', 'hoverData'), dash.Input('graph6', 'hoverData')]
+)
+def store_hovered_chapter(hoverData1, hoverData2, hoverData3, hoverData4, hoverData5, hoverData6):
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        return None
+    hover_data = ctx.triggered[0]['value']
+    if hover_data:
+        return hover_data['points'][0]['x']
+    return None
+
+@app.callback(
+    [dash.Output('graph1', 'figure'), dash.Output('graph2', 'figure'), dash.Output('graph3', 'figure'), dash.Output('graph4', 'figure'), dash.Output('graph5', 'figure'), dash.Output('graph6', 'figure')],
+    [dash.Input('hovered-chapter', 'data')]
+)
+def highlight_hovered_chapter(hovered_chapter):
+    global fig1, fig2, fig3, fig4, fig5, fig6
+    if hovered_chapter is None:
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
+
+    for fig in [fig1, fig2, fig3, fig4, fig5, fig6]:
+        max_val = max(max(fig['data'][0]['y']), 1)
+        for trace in fig['data']:
+            if hovered_chapter in trace['x']:
+                if fig == fig5:
+                    trace['marker']['color'] = [
+                        "red" if chapter == hovered_chapter else original_color
+                        for chapter, original_color in zip(trace['x'], trace['marker']['color'])
+                    ]
+                else:
+                    trace['marker']['color'] = "red"
+            else:
+                if fig == fig5:
+                    trace['marker']['color'] = [
+                        "green" if chapter == hovered_chapter else original_color
+                        for chapter, original_color in zip(trace['x'], trace['marker']['color'])
+                    ]
+                else:
+                    trace['marker']['color'] = utils.map_values_to_colors([trace['y'][0] / max_val], utils.summer if toggle1_state else utils.wistia)
+
+    return fig1, fig2, fig3, fig4, fig5, fig6
 
 @app.callback(
         dash.Output('tab1', 'className'),

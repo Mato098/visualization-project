@@ -8,74 +8,90 @@ h1 {
     text-align: center;
     margin-bottom: 20px;
     font-family: 'CustomFont', Arial, sans-serif;
-    color: #dddddd; /* White color for visibility on dark background */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for better readability */
-    padding: 10px; /* Padding for spacing */
-    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent background for contrast */
-    border-radius: 5px; /* Rounded corners */
+    color: #dddddd;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
 }
 
-/* Styles for Book 1 slider */
+.chapter-display {
+    width: 60%;
+    height: auto;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #333333;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 23px;
+    font-family: 'CustomFont', Arial, sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #dddddd;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
 .book1-slider .rc-slider-track {
-    background-color: #A2B041; /* Customize this color */
+    background-color: #A2B041;
 }
 
 .book1-slider .rc-slider-rail {
-    background-color: #333333; /* Customize this color */
+    background-color: #333333;
 }
 
 .book1-slider .rc-slider-handle {
-    background-color: #A2B041; /* Customize this color */
-    border: 2px solid #000000; /* Customize this color */
+    background-color: #A2B041;
+    border: 2px solid #000000;
 }
 
 .book1-slider .rc-slider-mark-text {
-    color: #ffffff; /* Color for marks outside the selection */
+    color: #ffffff;
 }
 
 .book1-slider .rc-slider-mark-text-active {
-    color: #A2B041; /* Color for marks inside the selection */
+    color: #A2B041;
 }
 
 .book1-slider .rc-slider-dot-active {
-    border-color: #5f6826; /* Customize this color */
+    border-color: #5f6826;
 }
 
 .book1-slider .rc-slider-dot:not(.rc-slider-dot-active) {
-    border-color: #333333; /* Customize this color */
+    border-color: #333333;
 }
 
-/* Styles for Book 2 slider */
 .book2-slider .rc-slider-track {
-    background-color: #ff5733; /* Customize this color */
+    background-color: #ff5733;
 }
 
 .book2-slider .rc-slider-rail {
-    background-color: #333333; /* Customize this color */
+    background-color: #333333;
 }
 
 .book2-slider .rc-slider-handle {
-    background-color: #ffffff; /* Customize this color */
-    border: 2px solid #000000; /* Customize this color */
+    background-color: #ffffff;
+    border: 2px solid #000000;
 }
 
 .book2-slider .rc-slider-mark-text {
-    color: #ffffff; /* Color for marks outside the selection */
+    color: #ffffff;
 }
 
 .book2-slider .rc-slider-mark-text-active {
-    color: #ff5733; /* Color for marks inside the selection */
+    color: #ff5733;
 }
 
 .book2-slider .rc-slider-dot:not(.rc-slider-dot-active) {
-    border-color: #333333; /* Customize this color */
+    border-color: #333333;
 }
 
 .book2-slider .rc-slider-dot-active {
-    border-color: #af3e24; /* Customize this color */
+    border-color: #af3e24;
 }
 
-/* Styles for toggle buttons */
 .toggle-button {
     color: white;
     border: none;
@@ -98,116 +114,108 @@ h1 {
     background-color: grey;
 }
 
-/* Styles for tab buttons */
 .custom-tabs {
-    background-color: rgba(0, 0, 0, 0.20); /* Dark background for tabs */
-    padding: 12px 24px; /* Increased padding for better spacing */
-    border-radius: 8px 8px 8px 8px; /* More rounded corners for a modern look */
-    display: flex; /* Flexbox layout for alignment */
+    background-color: rgba(0, 0, 0, 0.20);
+    padding: 12px 24px;
+    border-radius: 8px 8px 8px 8px;
+    display: flex;
 }
 .custom-tabs .tab-green {
-    background-color: #A2B041 !important; /* Green background for tabs */
-    color: #ffffff !important; /* White text color for tabs */
-    padding: 15px 30px !important; /* Increased padding for tabs */
-    border-radius: 5px 5px 0 0 !important; /* Rounded corners for tabs */
-    margin-right: 20px !important; /* Increased space between tabs */
-    margin-left: 20px !important; /* Increased space from the edge of the screen */
-    cursor: pointer !important; /* Pointer cursor on hover */
+    background-color: #A2B041 !important;
+    color: #ffffff !important;
+    padding: 15px 30px !important;
+    border-radius: 5px 5px 0 0 !important;
+    margin-right: 20px !important;
+    margin-left: 20px !important;
+    cursor: pointer !important;
     transition: background-color 0.3s, color 0.3s !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important; /* Text shadow for visibility */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
     border: none !important;
     box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 .custom-tabs .tab-red {
-    background-color: #ff5733 !important; /* Red background for tabs */
-    color: #ffffff !important; /* White text color for tabs */
-    padding: 15px 30px !important; /* Increased padding for tabs */
-    border-radius: 5px 5px 0 0 !important; /* Rounded corners for tabs */
-    margin-right: 20px !important; /* Increased space between tabs */
-    margin-left: 20px !important; /* Increased space from the edge of the screen */
-    cursor: pointer !important; /* Pointer cursor on hover */
+    background-color: #ff5733 !important;
+    color: #ffffff !important;
+    padding: 15px 30px !important;
+    border-radius: 5px 5px 0 0 !important;
+    margin-right: 20px !important;
+    margin-left: 20px !important;
+    cursor: pointer !important;
     transition: background-color 0.3s, color 0.3s !important;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important; /* Text shadow for visibility */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
     border: none !important;
     box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Styles for individual tabs on hover */
 .custom-tabs .tab-green:hover {
-    background-color: #899637 !important; /* Darker background color for tabs on hover */
+    background-color: #899637 !important;
 }
 
-/* Styles for the selected tab */
 .custom-tabs .tab-green.tab--selected {
-    background-color: #A2B041 !important; /* Background color for selected tab */
-    border-top: 3px solid #0f0b07 !important; /* Thicker border for selected tab */
-    font-weight: bold !important; /* Bold text for selected tab */
+    background-color: #899637 !important;
+    border-top: 3px solid #0f0b07 !important;
+    font-weight: bold !important;
 }
 
-/* Styles for the selected tab on hover */
 .custom-tabs .tab-green.tab--selected:hover {
-    background-color: #899637 !important; /* Darker blue for selected tab on hover */
+    background-color: #899637 !important;
 }
 
-/* Styles for individual tabs on hover */
 .custom-tabs .tab-red:hover {
-    background-color: #df4928 !important; /* Darker background color for tabs on hover */
+    background-color: #df4928 !important;
 }
 
-/* Styles for the selected tab */
 .custom-tabs .tab-red.tab--selected {
-    background-color: #ff5733 !important; /* Background color for selected tab */
-    border-top: 3px solid #0f0b07 !important; /* Thicker border for selected tab */
-    font-weight: bold !important; /* Bold text for selected tab */
+    background-color: #df4928 !important;
+    border-top: 3px solid #0f0b07 !important;
+    font-weight: bold !important;
 }
 
-/* Styles for the selected tab on hover */
 .custom-tabs .tab-red.tab--selected:hover {
-    background-color: #df4928 !important; /* Darker blue for selected tab on hover */
+    background-color: #df4928 !important;
 }
 
 .content-container {
     display: flex;
-    justify-content: space-around; /* Space all content evenly with more space between them */
+    justify-content: space-around;
     flex-wrap: wrap;
-    padding: 20px; /* Padding for spacing */
-    background-color: rgba(0, 0, 0, 0.1); /* Light background color */
-    border-radius: 10px; /* Rounded corners */
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .wordcloud-container {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center all content horizontally */
-    align-items: center; /* Center all content vertically */
-    padding: 20px; /* Padding for spacing */
-    border-radius: 10px; /* Rounded corners */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .wordcloud-container .label {
     color: #ffffff;
-    font-size: 20px; /* Larger font size for labels */
-    font-weight: bold; /* Bold font weight for emphasis */
-    margin-bottom: 20px; /* Margin for spacing */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Subtle shadow for better readability */
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.bar-chart-container {/*3x3 grid for graphs*/
+.bar-chart-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns with equal width */
-    grid-gap: 20px; /* Spacing between columns */
-    padding: 20px; /* Padding for spacing */
-    border-radius: 10px; /* Rounded corners */
-    background-color: rgba(0, 0, 0, 0.1); /* Light background color */
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .bar-chart {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center all content horizontally */
-    align-items: center; /* Center all content vertically */
-    padding: 20px; /* Padding for spacing */
-    border-radius: 10px; /* Rounded corners */
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border-radius: 15px;
 }
-
