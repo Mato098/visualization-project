@@ -247,10 +247,8 @@ def get_avg_wordcount_per_sentence_bar_graph(book: Book, from_idx: int, to_idx: 
 def get_direct_vs_indirect_speech_graph(book: Book, from_idx: int, to_idx: int, theme: str):
     values_direct = [book['chapters'][i]['direct_speech'] for i in range(from_idx, to_idx + 1)]
     values_indirect = [book['chapters'][i]['indirect_speech'] for i in range(from_idx, to_idx + 1)]
-    color_scale_direct = summer if theme == 'summer' else wistia
-    color_scale_indirect = wistia if theme == 'summer' else summer
-    colors_direct = map_values_to_colors(values_direct, color_scale_direct)
-    colors_indirect = map_values_to_colors(values_indirect, color_scale_indirect)
+    colors_direct = ['#0C6749' if theme == 'summer' else '#D6631E' for _ in range(len(values_direct))]
+    colors_indirect = ['#DDD34E' if theme == 'summer' else'#C4C252' for _ in range(len(values_indirect))]
 
     chapter_names = []
     for i in range(from_idx, to_idx + 1):
@@ -263,7 +261,6 @@ def get_direct_vs_indirect_speech_graph(book: Book, from_idx: int, to_idx: int, 
         'Chapter Names': chapter_names
     })
 
-
     fig = px.bar(
         data_frame=df,
         x='Chapter',
@@ -274,5 +271,7 @@ def get_direct_vs_indirect_speech_graph(book: Book, from_idx: int, to_idx: int, 
         hover_name='Chapter Names'
     )
     fig = style_fig(fig, theme, customdata_column='Chapter Names')
-    fig.update_layout(showlegend=True)
+    fig.update_layout(showlegend=True, legend_title_text='Speech Type')
+    fig.update_layout(xaxis=dict(range=[-0.5, len(fig.data[0]['x']) - 0.5]))
+    fig.update_yaxes(title_text='Frequency')
     return fig

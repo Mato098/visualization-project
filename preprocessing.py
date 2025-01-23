@@ -15,16 +15,16 @@ class Chapter:
         self.number = number
         self.title = title
         self.text = text
-        self.wordcount = 0#########
-        self.avg_word_length = 0#####
-        self.avg_wordcount_per_sentence = 0##########
-        self.word_frequency = {}#
-        self.word_frequency_sorted = []#
-        self.word_frequency_no_stopwords = {}#
-        self.word_frequency_no_stopwords_sorted = []###########
+        self.wordcount = 0
+        self.avg_word_length = 0
+        self.avg_wordcount_per_sentence = 0
+        self.word_frequency = {}
+        self.word_frequency_sorted = []
+        self.word_frequency_no_stopwords = {}
+        self.word_frequency_no_stopwords_sorted = []
 
-        self.lute_count = 0#########
-        self.nameCount = {}######
+        self.lute_count = 0
+        self.nameCount = {}
 
         self.direct_speech = 0
         self.indirect_speech = 0

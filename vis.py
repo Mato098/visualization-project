@@ -152,23 +152,21 @@ app.layout = html.Div(
                 dcc.RangeSlider(
                     id='chapter-slider',
                     min=0,
-                    max=len(book1['chapters']),  # Example range; can be updated dynamically
+                    max=len(book1['chapters']),
                     step=1,
-                    marks={i: f"{i}" for i in range(1, len(book1['chapters']) + 1, 10)},  # Display every tenth number
-                    value=[0, 14],  # Initial range
+                    marks={i: f"{i}" for i in range(1, len(book1['chapters']) + 1, 10)},
+                    value=[0, 14],
                     tooltip={'always_visible': True, 'placement': 'bottom'},
                     className='book1-slider' if toggle1_state else 'book2-slider'
                 )
             ]
         ),
 
-        # Tabs for views
         dcc.Tabs(id="tabs", value='wordclouds', className='custom-tabs', children=[
             dcc.Tab(id="tab1", label='Wordclouds', value='wordclouds', className='tab-green', selected_className='tab--selected'),
             dcc.Tab(id="tab2", label='Bar Charts', value='barcharts', className='tab-green', selected_className='tab--selected'),
         ]),
         
-        # Placeholder for graphs based on selected tab
         html.Div(id="tab-content", className='content-container', children=[
             dcc.Graph(id='graph1', className='bar-chart'),
             dcc.Graph(id='graph2', className='bar-chart'),
@@ -181,7 +179,7 @@ app.layout = html.Div(
     ]
 )
 
-# Callbacks for interactivity
+
 @app.callback(
     dash.Output('chapter-display', 'children'),
     dash.Input('chapter-slider', 'value')
@@ -302,22 +300,22 @@ def highlight_hovered_chapter(hovered_chapter):
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
 
     for fig in [fig1, fig2, fig3, fig4, fig5, fig6]:
-        max_val = max(max(fig['data'][0]['y']), 1)
+        max_val = max(max([a for trace in fig['data'] for a in trace['y']]), 1)        
+
         for trace in fig['data']:
             if hovered_chapter in trace['x']:
                 if fig == fig5:
+                    max_val = max(max(fig['data'][0]['y']), 1)
                     trace['marker']['color'] = [
-                        "red" if chapter == hovered_chapter else original_color
-                        for chapter, original_color in zip(trace['x'], trace['marker']['color'])
+                            ("red" if trace['name'] == 'Indirect' else '#FF006E') if chapter == hovered_chapter else 
+                            ('#DDD34E' if toggle1_state else'#C4C252') if trace['name'] == 'Indirect' else '#0C6749' if toggle1_state else '#D6631E'
+                        for chapter in trace['x']
                     ]
                 else:
                     trace['marker']['color'] = "red"
             else:
                 if fig == fig5:
-                    trace['marker']['color'] = [
-                        "green" if chapter == hovered_chapter else original_color
-                        for chapter, original_color in zip(trace['x'], trace['marker']['color'])
-                    ]
+                    pass
                 else:
                     trace['marker']['color'] = utils.map_values_to_colors([trace['y'][0] / max_val], utils.summer if toggle1_state else utils.wistia)
 
@@ -365,9 +363,10 @@ def buttons_toggle_children_update(_, __):
         step=1,
         marks={0: "1", slider_max: f"{slider_max}"} | {i: f"{i}" for i in range(10, slider_max, 10)},
         value=[slider_saved_from, slider_saved_to + 1],
-        tooltip={'always_visible': True, 'placement': 'bottom'},
+        tooltip={'always_visible': True, 'placement': 'bottom', 'transform': 'addOne'},
         className='book1-slider' if toggle1_state else 'book2-slider'
     )
+    
     return new_slider, [
         html.Div(
             toggle1,
@@ -380,6 +379,5 @@ def buttons_toggle_children_update(_, __):
     ],
 
 
-# Run the app locally
 if __name__ == "__main__":
     app.run_server(debug=True)#, dev_tools_silence_routes_logging = False)
