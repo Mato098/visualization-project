@@ -1,1 +1,2 @@
-[View PDF](https://raw.githubusercontent.com/your-username/your-repo/main/file.pdf)
+![Page 1](https://github.com/your-username/your-repo/blob/main/page_1.png)
+![Page 2](https://github.com/your-username/your-repo/blob/main/page_2.png)
